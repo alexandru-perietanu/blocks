@@ -1,9 +1,20 @@
 var gameCycle;
 var padX = 250;
+var padY = 465;
 var pad;
 var ball;
-var ballDirection;
-var ballSpeed;
+var ballX;
+var ballY;
+var ballStartX = 250;
+var ballStartY = 350;
+var ballSpeedX = 5;
+var ballSpeedY = 5;
+var ballDistanceX = 250;
+var ballDistanceY = 350;
+var ballRadius = 7;
+var screenWidth = 500;
+var screenHeight = 500;
+var blocksArray = [];
 
 function populate() {
     createBlocks();
@@ -29,7 +40,53 @@ function gameLoop() {
 };
 
 function moveBall() {
+    //var x = ballStartX + Math.cos(ballDirectionX) * ballDistanceX;
+    //var y = ballStartY + Math.sin(ballDirectionY) * ballDistanceY;
+    
+    ballDistanceX += ballSpeedX;
+    ballDistanceY += ballSpeedY;
 
+    ballX = ballDistanceX;
+    ballY = ballDistanceY;
+
+    hitTestPad();
+    hitTestBlocks();
+
+    if (ballY > screenHeight - ballRadius || ballY < ballRadius) {
+         ballSpeedY *= -1;
+    }
+
+    if (ballX > screenWidth - ballRadius || ballX < ballRadius) {
+        ballSpeedX *= -1;
+    }
+
+    ball.style.left = ballX + "px";
+    ball.style.top = ballY + "px";
+};
+
+function hitTestPad() {
+    var leftPoint = padX - 100;
+    var rightPoint = padX + 100;
+
+    if (ballY < padY + 10 && ballY + ballRadius > padY && ballX > leftPoint && ballX < rightPoint) {
+        ballSpeedY *= -1;
+    }
+};
+
+function hitTestBlocks() {
+    var element;
+    for (var i = 0; i < 10; i++) {
+        for (var j = 0; j < 10; j++) {
+            element = blocksArray[i][j];
+            if (!element) continue;
+
+            if (ballY + ballRadius > element.y && ballY - ballRadius < element.y + element.height && ballX > element.x && ballX < element.x + element.width) {
+                ballSpeedY *= -1;
+                element.element.remove();
+                blocksArray[i][j] = undefined;
+            }
+        }
+    }
 };
 
 function movePad() {
@@ -50,14 +107,23 @@ function createBlocks() {
     var content = document.getElementsByClassName("content")[0];
     for (var i = 0; i < 10; i++) {
         xPos = 25;
+        blocksArray[i] = [];
 
         for (var j = 0; j < 10; j++) {
             element = document.createElement("div");
             element.className = "block-element";
             element.style.left = xPos + "px";
-            xPos += 45;
+            element.id = "bock" + i + j;
             element.style.top = yPos + "px";
             content.appendChild(element);
+            blocksArray[i][j] = {
+                element: element,
+                x: xPos, 
+                y: yPos,
+                width: 40,
+                height: 5
+            };
+            xPos += 45;
         }
         yPos += 15;
     }
