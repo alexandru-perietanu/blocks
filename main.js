@@ -15,13 +15,32 @@ var ballRadius = 7;
 var screenWidth = 500;
 var screenHeight = 500;
 var blocksArray = [];
+var clickedToStartFunctionReference;
 
 function populate() {
     createBlocks();
     createPad();
     createBall();
+    
+    init();
+}
+
+function init() {
+    clickedToStartFunctionReference = clickedToStart.bind(this);
+
+    document.addEventListener("click", clickedToStartFunctionReference);
+}
+
+function clickedToStart() {
+    document.removeEventListener("click", clickedToStartFunctionReference);
+    hideClickToStartTextElement();
     startGame();
-};
+}
+
+function hideClickToStartTextElement() {
+    var startText = document.getElementById("click-to-start");
+    startText.setAttribute("style", "display:none")
+}
 
 function startGame() {
     document.addEventListener("mousemove", mouseMove);
@@ -32,17 +51,14 @@ function startGame() {
 
 function mouseMove(e) {
     padX = e.clientX;
-};
+}
 
 function gameLoop() {
     moveBall();
     movePad();
-};
+}
 
 function moveBall() {
-    //var x = ballStartX + Math.cos(ballDirectionX) * ballDistanceX;
-    //var y = ballStartY + Math.sin(ballDirectionY) * ballDistanceY;
-    
     ballDistanceX += ballSpeedX;
     ballDistanceY += ballSpeedY;
 
@@ -62,7 +78,7 @@ function moveBall() {
 
     ball.style.left = ballX + "px";
     ball.style.top = ballY + "px";
-};
+}
 
 function hitTestPad() {
     var leftPoint = padX - 100;
@@ -71,7 +87,7 @@ function hitTestPad() {
     if (ballY < padY + 10 && ballY + ballRadius > padY && ballX > leftPoint && ballX < rightPoint) {
         ballSpeedY *= -1;
     }
-};
+}
 
 function hitTestBlocks() {
     var element;
@@ -87,7 +103,7 @@ function hitTestBlocks() {
             }
         }
     }
-};
+}
 
 function movePad() {
     if (padX < 100) {
@@ -98,7 +114,7 @@ function movePad() {
     }
     pad.style.left = padX + "px";
     
-};
+}
 
 function createBlocks() {
     var element;
@@ -113,7 +129,7 @@ function createBlocks() {
             element = document.createElement("div");
             element.className = "block-element";
             element.style.left = xPos + "px";
-            element.id = "bock" + i + j;
+            element.id = "block" + i + j;
             element.style.top = yPos + "px";
             content.appendChild(element);
             blocksArray[i][j] = {
@@ -127,7 +143,7 @@ function createBlocks() {
         }
         yPos += 15;
     }
-};
+}
 
 function createPad() {
     var content = document.getElementsByClassName("content")[0];
@@ -146,6 +162,6 @@ function createBall() {
     ball.style.top = 350 + "px";
     var content = document.getElementsByClassName("content")[0];
     content.appendChild(ball);
-};
+}
 
 window.onload = populate;

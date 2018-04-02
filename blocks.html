@@ -5,10 +5,23 @@
         <meta charset="UTF-8">
         <script type="text/javascript" src="main.js"></script>
         <style>
-
             body {
                 background: black;
             }
+
+            #click-to-start {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                z-index: 1000;
+                height: 100%;
+                width: 100%;
+                color: #fff;
+                background: rgba(0, 0, 0, 0.6);
+                font-size: 28px;
+            }
+
             .content {
                 background: url("ffgeg.jpg");
                 width: 500px;
@@ -49,7 +62,7 @@
     </head>
     <body>
         <div class="content">
-
+            <span id="click-to-start">Click anywhere to start the game</span>
         </div>
     </body>
 </html>    
