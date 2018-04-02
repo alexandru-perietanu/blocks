@@ -15,6 +15,7 @@ var ballRadius = 7;
 var screenWidth = 500;
 var screenHeight = 500;
 var blocksArray = [];
+var clickedToStartFunctionReference;
 
 function populate() {
     createBlocks();
@@ -25,11 +26,23 @@ function populate() {
 }
 
 function init() {
-    document.addEventListener("click", startGame);
+    clickedToStartFunctionReference = clickedToStart.bind(this);
+
+    document.addEventListener("click", clickedToStartFunctionReference);
+}
+
+function clickedToStart() {
+    document.removeEventListener("click", clickedToStartFunctionReference);
+    hideClickToStartTextElement();
+    startGame();
+}
+
+function hideClickToStartTextElement() {
+    var startText = document.getElementById("click-to-start");
+    startText.setAttribute("style", "display:none")
 }
 
 function startGame() {
-    document.removeEventListener("click", startGame);
     document.addEventListener("mousemove", mouseMove);
     pad = document.getElementsByClassName("pad")[0];
     ball = document.getElementsByClassName("ball")[0];
@@ -46,9 +59,6 @@ function gameLoop() {
 }
 
 function moveBall() {
-    //var x = ballStartX + Math.cos(ballDirectionX) * ballDistanceX;
-    //var y = ballStartY + Math.sin(ballDirectionY) * ballDistanceY;
-    
     ballDistanceX += ballSpeedX;
     ballDistanceY += ballSpeedY;
 
@@ -119,7 +129,7 @@ function createBlocks() {
             element = document.createElement("div");
             element.className = "block-element";
             element.style.left = xPos + "px";
-            element.id = "bock" + i + j;
+            element.id = "block" + i + j;
             element.style.top = yPos + "px";
             content.appendChild(element);
             blocksArray[i][j] = {
